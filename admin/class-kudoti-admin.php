@@ -133,4 +133,62 @@ class Kudoti_Admin
         include_once 'partials/kudoti-admin-display.php';
     }
 
+    /**
+     * Registers and Defines the necessary fields we need.
+     *
+     */
+    public function kudoti_admin_settings_save()
+    {
+
+        register_setting($this->plugin_name, $this->plugin_name, array($this, 'plugin_options_validate'));
+
+        add_settings_section('kudoti_main', 'Main Settings', array($this, 'kudoti_section_text'), 'kudoti-settings-page');
+
+        add_settings_field('api_sid', 'API SID', array($this, 'kudoti_setting_sid'), 'kudoti-settings-page', 'kudoti_main');
+
+        add_settings_field('api_auth_token', 'API AUTH TOKEN', array($this, 'kudoti_setting_token'), 'kudoti-settings-page', 'kudoti_main');
+    }
+
+/**
+ * Displays the settings sub header
+ *
+ */
+    public function kudoti_section_text()
+    {
+        echo '<h3>Edit api details</h3>';
+    }
+
+/**
+ * Renders the sid input field
+ *
+ */
+    public function kudoti_setting_sid()
+    {
+
+        $options = get_option($this->plugin_name);
+        echo "<input id='plugin_text_string' name='$this->plugin_name[api_sid]' size='40' type='text' value='{$options['api_sid']}' />";
+    }
+
+/**
+ * Renders the auth_token input field
+ *
+ */
+    public function kudoti_setting_token()
+    {
+        $options = get_option($this->plugin_name);
+        echo "<input id='plugin_text_string' name='$this->plugin_name[api_auth_token]' size='40' type='text' value='{$options['api_auth_token']}' />";
+    }
+
+/**
+ * Sanitises all input fields.
+ *
+ */
+    public function plugin_options_validate($input)
+    {
+        $newinput['api_sid'] = trim($input['api_sid']);
+        $newinput['api_auth_token'] = trim($input['api_auth_token']);
+
+        return $newinput;
+    }
+
 }

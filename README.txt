@@ -112,3 +112,9 @@ Markdown uses email style notation for blockquotes and I've been told:
 > Asterisks for *emphasis*. Double it up  for **strong**.
 
 `<?php code(); // goes in backticks ?>`
+
+
+https://www.twilio.com/blog/2017/08/send-sms-wordpress-php-plugin.html
+https://www.sitepoint.com/an-introduction-to-wordpress-plugin-development/
+https://developer.wordpress.org/plugins/intro/
+https://www.youtube.com/watch?v=Z7QfH-s-15s
