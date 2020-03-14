@@ -191,4 +191,33 @@ class Kudoti_Admin
         return $newinput;
     }
 
+    /**
+     * Register the sms page for the admin area.
+     *
+     * @since    1.0.0
+     */
+    public function register_kudoti_sms_page()
+    {
+        // Create our settings page as a submenu page.
+        add_submenu_page(
+            'tools.php', // parent slug
+            __('KUDOTI SMS PAGE', $this->plugin_name . '-sms'), // page title
+            __('KUDOTI', $this->plugin_name . '-sms'), // menu title
+            'manage_options', // capability
+            $this->plugin_name . '-sms', // menu_slug
+            array($this, 'display_kudoti_sms_page') // callable function
+        );
+    }
+
+    /**
+     * Display the sms page - The page we are going to be sending message from.
+     *
+     * @since    1.0.0
+     */
+
+    public function display_kudoti_sms_page()
+    {
+        include_once 'partials/kudoti-admin-sms.php';
+    }
+
 }
