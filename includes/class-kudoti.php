@@ -161,7 +161,10 @@ class Kudoti {
 
 		// Saves and update settings
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'kudoti_admin_settings_save' );
-
+		// Hook our sms page
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_kudoti_sms_page' );
+		// calls sending function whenever we try sending messages.
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'send_message' );
 	}
 
 	/**

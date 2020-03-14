@@ -20,6 +20,11 @@
  * @subpackage Kudoti/admin
  * @author     Kolawole Olulana <dev@kudoti.com>
  */
+
+require_once( plugin_dir_path( __FILE__ ) .'/../twilio/Twilio/autoload.php');
+
+use Twilio\Rest\Client;
+
 class Kudoti_Admin
 {
 
@@ -220,4 +225,83 @@ class Kudoti_Admin
         include_once 'partials/kudoti-admin-sms.php';
     }
 
+    public function send_message()
+    {
+
+        if (!isset($_POST['send_sms_message'])) {return;}
+
+        $to = (isset($_POST['numbers'])) ? $_POST['numbers'] : '';
+        $sender_id = (isset($_POST['sender'])) ? $_POST['sender'] : '';
+        $message = (isset($_POST['message'])) ? $_POST['message'] : '';
+
+        //gets our api details from the database.
+        $api_details = get_option('kudoti'); #sendex is what we use to identify our option, it can be anything
+
+        if (is_array($api_details) and count($api_details) != 0) {
+            $TWILIO_SID = $api_details['api_sid'];
+            $TWILIO_TOKEN = $api_details['api_auth_token'];
+        }
+
+        try {
+            $to = explode(',', $to);
+
+            $client = new Client($TWILIO_SID, $TWILIO_TOKEN);
+
+            $response = $client->messages->create(
+                $to,
+                array(
+                    'from' => $sender_id,
+                    'body' => $message,
+                )
+            );
+
+            self::DisplaySuccess();
+
+        } catch (Exception $e) {
+
+            self::DisplayError($e->getMessage());
+        }
+    }
+
+    /**
+     * Designs for displaying Notices
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var $message - String - The message we are displaying
+     * @var $status   - Boolean - its either true or false
+     */
+    public static function admin_notice($message, $status = true)
+    {
+        $class = ($status) ? 'notice notice-success' : 'notice notice-error';
+        $message = __($message, 'sample-text-domain');
+
+        printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), esc_html($message));
+    }
+
+/**
+ * Displays Error Notices
+ *
+ * @since    1.0.0
+ * @access   private
+ */
+    public static function DisplayError($message = "Aww!, there was an error.")
+    {
+        add_action('admin_notices', function () use ($message) {
+            self::admin_notice($message, false);
+        });
+    }
+
+/**
+ * Displays Success Notices
+ *
+ * @since    1.0.0
+ * @access   private
+ */
+    public static function DisplaySuccess($message = "Successful!")
+    {
+        add_action('admin_notices', function () use ($message) {
+            self::admin_notice($message, true);
+        });
+    }
 }
